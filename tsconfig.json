@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "ES6",
         "module": "commonjs",
-
+        "removeComments": true,
         "outDir": "built"
     },
     "files": [
