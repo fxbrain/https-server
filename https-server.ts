@@ -2,8 +2,6 @@
 
 /// <reference path="typings/asmcrypto/asmcrypto.d.ts" />
 
-//import { readFileSync, readFile } from 'fs';
-
 "use strict";
 
 import * as fs from 'fs';
@@ -91,47 +89,4 @@ export class HttpsServer<T extends URL> {
     getURL(): string {
         return this.url;
     }
-
-    sendUpdates(emailAddr: (string | string[])) {
-        //is emailAddr an Array?
-        
-        if(Array.isArray(emailAddr)) {
-            emailAddr.forEach((val, idx) => {
-                val.trim();
-            });
-        } else {
-            emailAddr.trim();
-        }
-    }
 }
-
-function readFile(filename: string) {
-    return new Promise( (resolve, reject) => {
-        fs.readFile(filename, 'utf-8', (err, data) => {
-            err ? reject(err) : resolve(data);
-        });
-    });
-}
-
-function* getfiles() {
-    yield '../https-server.ts';
-    // ...
-}
-
-function logwords(filename, text) {
-    console.log(`File "${filename}" has ${text.split(' ').length} words`);
-}
-
-async function run() {
-    for(let file of getfiles()) {
-        try {
-            var data = await readFile(file);
-            logwords(file, data);
-        }
-        catch(err) {
-            console.log(`Failed to read file "${file}" with error: ${err}`);
-        }
-    }
-}
-
-run();
