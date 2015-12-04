@@ -1,0 +1,13 @@
+{
+  "name": "https_server",
+  "version": "1.0.0",
+  "description": "https TLS server",
+  "main": "https-server.js",
+  "scripts": {
+      "test": "node test/test.js",
+      "build": "tsd install && tsc && exit 0;",
+      "defs": "tsd install"
+  },
+  "author": "Stefan Schwarz",
+  "license": "MIT"
+}
