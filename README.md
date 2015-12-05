@@ -9,7 +9,7 @@
 
 ##Create Certificates
 
-1. mkdir secrets && cd secrets
+1. mkdir secrets && cd $_
 2. openssl genrsa -des3 -out server.enc.key 2048
 3. openssl req -new -key server.enc.key -out server.csr
 4. openssl rsa -in server.enc.key -out server.key
