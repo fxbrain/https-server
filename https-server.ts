@@ -1,5 +1,4 @@
 /// <reference path="typings/node/node.d.ts" />
-/// <reference path="typings/asmcrypto/asmcrypto.d.ts" />
 /// <reference path="http2.d.ts" />
 
 "use strict";
