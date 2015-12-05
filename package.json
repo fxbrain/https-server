@@ -4,10 +4,13 @@
   "description": "https TLS server",
   "main": "https-server.js",
   "scripts": {
-      "test": "node test/test.js",
-      "build": "tsd install && tsc && exit 0;",
-      "defs": "tsd install"
+    "test": "node test/test.js",
+    "build": "tsd install && tsc && exit 0;",
+    "defs": "tsd install"
   },
   "author": "Stefan Schwarz",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "http2": "^3.2.0"
+  }
 }

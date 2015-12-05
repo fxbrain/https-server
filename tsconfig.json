@@ -6,6 +6,8 @@
         "outDir": "built"
     },
     "files": [
-        "https-server.ts"
+        "https-server.ts",
+        "test/this_type_test.ts",
+        "test/test.ts"
     ]
 }

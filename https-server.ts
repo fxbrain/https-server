@@ -1,11 +1,12 @@
 /// <reference path="typings/node/node.d.ts" />
-
 /// <reference path="typings/asmcrypto/asmcrypto.d.ts" />
+/// <reference path="http2.d.ts" />
 
 "use strict";
 
 import * as fs from 'fs';
-import { createServer } from 'https';
+// const fs: typeof NodeJS.fs = require('fs'); // <-- why does it not work (see server.ts)
+import { createServer } from 'http2';
 import { extname }  from 'path';
 
 
