@@ -4,7 +4,7 @@
   "description": "https TLS server",
   "main": "https-server.js",
   "scripts": {
-    "test": "node test/test.js",
+    "test": "node built/test/test.js",
     "build": "tsd install && tsc && exit 0;",
     "defs": "tsd install"
   },
