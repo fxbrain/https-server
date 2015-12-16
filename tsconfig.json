@@ -7,7 +7,6 @@
     },
     "files": [
         "https-server.ts",
-        "test/this_type_test.ts",
         "test/test.ts"
     ]
 }
