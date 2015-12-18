@@ -3,7 +3,8 @@
         "target": "ES5",
         "module": "commonjs",
         "removeComments": true,
-        "outDir": "built"
+        "outDir": "built",
+        "sourceMap": true
     },
     "files": [
         "typings/tsd.d.ts",
