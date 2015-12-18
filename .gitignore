@@ -2,4 +2,5 @@ built/
 node_modules/
 secrets/
 typings/
+.imdone/
 npm-debug.log
