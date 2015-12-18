@@ -28,7 +28,7 @@ interface IURL {
     proto?: string
 }
 
-export class HttpsServer<T extends IURL> { // TODO:0 Rename to Http2Server issue:3
+export class HttpsServer<T extends IURL> {
     private url: string;
     //private port: number; // hmmm. JS does not support private members and so does TS
     private port: () => number; // a little trick to force it
@@ -38,7 +38,6 @@ export class HttpsServer<T extends IURL> { // TODO:0 Rename to Http2Server issue
 
     private proto: () => string;
 
-    // TODO:0 Give the option to choose between http2 or http issue:2
     constructor(URL: T) {
         this.port = function() {
             return URL.port || 8080;
