@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
-        "target": "ES6",
+        "target": "ES5",
         "module": "commonjs",
         "removeComments": true,
         "outDir": "built"
     },
     "files": [
+        "typings/tsd.d.ts",
         "https-server.ts",
         "test/test.ts"
     ]
