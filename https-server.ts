@@ -5,9 +5,6 @@
 import * as fs from "fs";
 import { extname }  from "path";
 
-// import { createServer as createServer2 } from "http2"; // TODO:0 load only when needed issue:5
-// import { createServer as createServerS } from "https";
-
 declare var require;
 import https = require("https");
 import http2 = require("http2");
@@ -119,7 +116,7 @@ export class HttpsServer<T extends IChallenge> {
 
     private __serve(dynamic?: boolean): void {
         let ref: typeof https | typeof http2;
-        if(this.proto() === "http2") {
+        if (this.proto() === "http2") {
             ref = require("http2");
         } else {
             ref = require("https");
