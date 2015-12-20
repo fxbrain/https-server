@@ -4,3 +4,6 @@ secrets/
 typings/
 .imdone/
 npm-debug.log
+.vscode/
+__secrets/
+.idea/
