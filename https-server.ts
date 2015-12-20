@@ -3,13 +3,14 @@
 "use strict";
 
 import * as fs from "fs";
-// const fs: typeof NodeJS.fs = require("fs"); // <-- why does it not work (see server.ts)
-
-import { createServer as createServer2 } from "http2";
-import { createServer as createServerS } from "https";
-
 import { extname }  from "path";
 
+// import { createServer as createServer2 } from "http2"; // TODO:0 load only when needed issue:5
+// import { createServer as createServerS } from "https";
+
+declare var require;
+import https = require("https");
+import http2 = require("http2");
 
 interface IResponse {
     writeHead: { (code: number, content: any): void; };
@@ -44,21 +45,6 @@ namespace core {
 
     let directorySeparator = "/";
 
-    /**
-     * Returns the last element of an array if non-empty, undefined otherwise.
-     */
-    function lastOrUndefined<T>(array: T[]): T {
-        if (array.length === 0) {
-            return undefined;
-        }
-        return array[array.length - 1];
-    }
-
-    function normalizeSlashes(path: string): string {
-        return path.replace(/\\/g, "/");
-    }
-
-    // Returns length of path root (i.e. length of "/", "x:/", "//server/share/, file:///user/files")
     function getRootLength(path: string): number {
         if (path.charCodeAt(0) === types.CharacterCodes.slash) {
             if (path.charCodeAt(1) !== types.CharacterCodes.slash) return 1;
@@ -72,11 +58,6 @@ namespace core {
             if (path.charCodeAt(2) === types.CharacterCodes.slash) return 3;
             return 2;
         }
-        // Per RFC 1738 'file' URI schema has the shape file://<host>/<path>
-        // if <host> is omitted then it is assumed that host value is 'localhost',
-        // however slash after the omitted <host> is not removed.
-        // file:///folder1/file1 - this is a correct URI
-        // file://folder2/file2 - this is an incorrect URI
         if (path.lastIndexOf("file:///", 0) === 0) {
             return "file:///".length;
         }
@@ -98,14 +79,11 @@ namespace core {
 
 export class HttpsServer<T extends IChallenge> {
     private url: string;
-    // private port: number; // hmmm. JS does not support private members and so does TS
     private port: () => number; // a little trick to force it
     // actually something that could be implemented through redmedical for instance.
     // this does not hide at all the member definiton, but it disallows to overwrite.
     private options: () => { key: Buffer, cert: Buffer };
-
     private proto: () => string;
-
     private behavior: boolean;
 
     constructor(URL: T) {
@@ -116,6 +94,7 @@ export class HttpsServer<T extends IChallenge> {
         this.proto = function() {
             return URL.proto || "http2";
         };
+
         this.url = "https://" + URL.location + ":" + this.port();
 
         this.behavior = URL.dynamic;
@@ -134,13 +113,20 @@ export class HttpsServer<T extends IChallenge> {
     }
 
     serve(): void {
-        this.proto() === "http2" ? this.__serve_http2(this.behavior) : this.__serve_https(this.behavior);
+        this.__serve(this.behavior);
         console.log(this.proto() + " server running at " + this.url);
     }
 
-    private __serve_http2(dynamic?: boolean): void {
+    private __serve(dynamic?: boolean): void {
+        let ref: typeof https | typeof http2;
+        if(this.proto() === "http2") {
+            ref = require("http2");
+        } else {
+            ref = require("https");
+        }
+
         if (!dynamic) {
-            createServerS(this.options(), (req: IRequest, res: IResponse) => {
+            ref.createServer(this.options(), (req: IRequest, res: IResponse) => {
                 let filePath: string = "." + req.url;
                 if (filePath === "./") {
                     filePath = "./index.html";
@@ -175,57 +161,16 @@ export class HttpsServer<T extends IChallenge> {
                 });
             }).listen(this.port());
         } else {
-            createServer2(this.options(), this.onRequest).listen(this.port());
+            ref.createServer(this.options(), this.__onRequest).listen(this.port());
         }
     }
 
-    private __serve_https(dynamic?: boolean): void {
-        if (!dynamic) {
-            createServerS(this.options(), (req: IRequest, res: IResponse) => {
-                let filePath: string = "." + req.url;
-                if (filePath === "./") {
-                    filePath = "./index.html";
-                }
-                let contentType = "text/html";
-                let ext: string = extname(filePath);
-
-                switch (ext) {
-                    case ".js":
-                        contentType = "text/javascript";
-                        break;
-
-                    case ".css":
-                        contentType = "text/css";
-                        break;
-
-                    case ".json":
-                        contentType = "application/json";
-                        break;
-                }
-
-                fs.readFile(filePath, (error: NodeJS.ErrnoException, content: Buffer) => {
-                    if (error) {
-                        if (error.code === "ENOENT") {
-                            res.writeHead(200, { "Content-Type": contentType });
-                            res.end(content, "utf-8");
-                        }
-                    } else {
-                        res.writeHead(200, { "Content-Type": contentType });
-                        res.end(content, "utf-8");
-                    }
-                });
-            }).listen(this.port());
-        } else {
-            createServerS(this.options(), this.onRequest).listen(this.port());
-        }
-    }
-
-    onRequest(req: IRequest, res: IResponse): void {
+    private __onRequest(req: IRequest, res: IResponse): void {
         res.writeHead(200, { "Content-Type": "text/text" });
         res.end(new Buffer("Requests work! :" + req.url), "utf-8");
     }
 
-    getURL(): string {
+    get URL(): string {
         return this.url;
     }
 }
